@@ -68,11 +68,11 @@ public:
             }
 
             for (int i = 0; i < numVertices; i++) {  //Continuously runs until all options have been visited
-                if (minHeap->extractFromHeap(i) != infinity) {  //If not the default value
-                    tempMinVal = minHeap->extractMin(); //Returns the lowest key value
-                    tempMinValIndex = minHeap->extractMinIndex(); //This gives the index of the lowest weight
+                if (minHeap->extractFromHeap(i) != infinity) {      //If not the default value
+                    tempMinVal = minHeap->extractMin();             //Returns the lowest key value
+                    tempMinValIndex = minHeap->extractMinIndex();   //This gives the index of the lowest weight
                     associatedVertexWithMinWeight = minHeap->extractFromHeap(tempMinValIndex);  //Returns the vertex associated with the lowest weight
-                    if (minHeap->isInPositionArray(associatedVertexWithMinWeight) == false) {  //If index has not been visited
+                    if (minHeap->isInPositionArray(associatedVertexWithMinWeight) == false) {   //If index has not been visited
                         cout << r << "--" << associatedVertexWithMinWeight << "(" << tempMinVal << ")" << endl;
                         minHeap->addToVisited(associatedVertexWithMinWeight);
                         totalCost = totalCost + tempMinVal;
