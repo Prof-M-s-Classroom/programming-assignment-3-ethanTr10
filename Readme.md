@@ -26,10 +26,10 @@ Run directly from the IDE.
 | Insert in MinHeap    | O(1)            |
 | Extract Min          | O(N)            |
 | Decrease Key         | O(1)            |
-| Prim’s MST Overall   | O(N^3)          |
+| Prim’s MST Overall   | O(N^4)          |
 
 Explain why your MST implementation has the above runtime:
-The insert in MinHeap is considered O(1) because the method takes in a vertex and a key and those values are used to set elements within arrays at a specific index, all being constant time operations. Extract min takes O(N) where N is the number of vertices because the function needs to traverse through all the elements in the array storing the weights to find the lowest weight. Decrease key is O(1) because the method just sets an element within key array to the value input newKey. Prim's MST overall is O(N^3) because I have multiple for loops and some are nested with extractMin of O(N). Must be O(N^3) since I need to traverse through the rows and columns of the adjacency matrix and call the extractMin().    
+The insert in MinHeap is considered O(1) because the method takes in a vertex and a key and those values are used to set elements within arrays at a specific index, all being constant time operations. Extract min takes O(N) where N is the number of vertices because the function needs to traverse through all the elements in the array storing the weights to find the lowest weight. Decrease key is O(1) because the method just sets an element within key array to the value input newKey. Prim's MST overall is O(N^4) because I have multiple for loops and some are nested with extractMin of O(N) and extractMinIndex of O(N). Must be O(N^4) since I need to traverse through the rows and columns of the adjacency matrix and call the extractMin() and extractMinIndex().    
 
 ## Assumptions
 Mention any design decisions or assumptions made:

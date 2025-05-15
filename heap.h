@@ -29,7 +29,7 @@ public:
         }
     };
 
-    int extractMin() { //Returns the index with the lowest weight
+    int extractMin() { //Returns the value with the lowest weight
         int tempMin=keyArray[0];
         for (int i=0; i < size; i++) {
             if (keyArray[i] < tempMin) {
