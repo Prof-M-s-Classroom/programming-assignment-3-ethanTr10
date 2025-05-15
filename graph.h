@@ -3,127 +3,99 @@
 using namespace std;
 
 #include "heap.h"
+
 class Graph {
 public:
-    Graph(int vertices) {   //constructor for Graph involving the creating of 2D array for adjacency matrix and minHeap
+    Graph(int vertices) {   //Constructor for Graph involving the creating of 2D array for adjacency matrix and minHeap
         this->numVertices = vertices;
-        adjMatrix= new int*[numVertices];
+        adjMatrix = new int *[numVertices];
         for (int r = 0; r < numVertices; r++) {
-            adjMatrix[r] = new int[numVertices];    //this new int[numVertices] is the columns
+            adjMatrix[r] = new int[numVertices]; //This new int[numVertices] is the columns
         }
-
         for (int r = 0; r < numVertices; r++) {
             for (int c = 0; c < numVertices; c++) {
-                adjMatrix[r][c] = infinity;    //setting all the values at first to be the constant infinity
+                adjMatrix[r][c] = infinity; //Setting all the values at first to be the constant infinity
             }
         }
-        minHeap= new MinHeap(vertices);
-        totalCost=0;
+        minHeap = new MinHeap(vertices);
+        totalCost = 0;
+        associatedVertexWithMinWeight = 0;
     };
-    ~Graph() {};    //figure this out at some point
-    void addEdge(int u, int v, int weight) {    //set the weight at each slot r,c and c,r because it is undirected
-        //u is the row
-        //v is the col
-        //weight is the value in there
+
+    ~Graph() {
+    };
+
+    void addEdge(int u, int v, int weight) {  //Set the weight at each slot r,c with the input weight
         adjMatrix[u][v] = {weight};
         adjMatrix[v][u] = {weight};
     };
-    void primMST() { //prints out the adjacency matrix based on the given input
-        cout<<"Adjacency Matrix Based on Initial Input" <<endl;
+
+    void primMST() {  //Prints out the adjacency matrix based on the given input and starts Prim's algorithm
+        cout << "Adjacency Matrix Based on Initial Input" << endl;
         for (int c = 0; c < numVertices; c++) {
-            cout << "     " << c << "   ";  //prints out all column values
+            cout << "     " << c << "   "; //Prints out all column values
         }
         cout << endl;
-        for (int r = 0; r < numVertices; r++) {    //runs numVertices times, printing out the current row
+        for (int r = 0; r < numVertices; r++) {  //Runs numVertices times, printing out the current row
             cout << r << "  { ";
-            for (int c = 0; c < numVertices; c++) {    //responsible for printing value at adjMatrix[r][c]
-                if (adjMatrix[r][c] == infinity)  {
-                    cout<< "∞";
-                }
-                else {
+            for (int c = 0; c < numVertices; c++) {  //Responsible for printing value at adjMatrix[r][c]
+                if (adjMatrix[r][c] == infinity) {
+                    cout << "∞";
+                } else {
                     cout << adjMatrix[r][c];
                 }
 
-                if (c == numVertices - 1) {    //special case when reaching the last possible column for formatting
+                if (c == numVertices - 1) {  //Special case when reaching the last possible column for formatting
                     cout << " }";
-                }
-                else {
+                } else {
                     cout << "        ";
                 }
             }
             cout << endl;
         }
 
-        minHeap->setAllVisitedArray(infinity);
-        for (int r = 0; r < numVertices; r++) {
-            //used to say numVertices
-            for (int c = 0; c < numVertices; c++) { //used to say numVertices
-                tempVal=adjMatrix[r][c];
-                if (r ==0 && c==0) {
-                    minHeap->insert(infinity,infinity);
+        for (int r = 0; r < numVertices; r++) {  //A double for-loop to get the value within each row and column
+            for (int c = 0; c < numVertices; c++) {
+                tempVal = adjMatrix[r][c];
+                if (r == 0 && c == 0) {  //Special case when nothing has been traversed yet to mark the first visited node
+                    minHeap->insert(infinity, infinity);
                     minHeap->addToVisited(r);
-                }
-                else if (tempVal == infinity) {
-                    minHeap->insert(infinity,infinity);
-                }
-                else {
-                    minHeap->insert(c,tempVal);
+                } else if (tempVal == infinity) {
+                    minHeap->insert(infinity, infinity);
+                } else {
+                    minHeap->insert(c, tempVal);
                 }
             }
 
-            for (int i=0; i< numVertices; i++) {
-                //Continuously runs until all options have been visited
-                int tempVal = minHeap->extractVisited(i);
-                if (minHeap->extractFromHeap(i) != tempVal ) {
-                    //minHeap->insertInPositionArray(r);
-                    tempMinVal= minHeap->extractMin();
-                    tempMinValIndex= minHeap->extractMinIndex(); //this gives the value with the lowest weight's index
-                    //then double check that the lowest weight associtaed vertex is not in the vistied array either
-                    int associatedVertexWithMinWeight= minHeap->extractFromHeap(tempMinValIndex);
-
-                    if (minHeap->isInPositionArray(associatedVertexWithMinWeight) == false) { //if index HAS NOT BEEN VISITED
-                        cout << r <<"--" << associatedVertexWithMinWeight << "(" << tempMinVal << ")" << endl;
+            for (int i = 0; i < numVertices; i++) {  //Continuously runs until all options have been visited
+                if (minHeap->extractFromHeap(i) != infinity) {  //If not the default value
+                    tempMinVal = minHeap->extractMin(); //Returns the lowest key value
+                    tempMinValIndex = minHeap->extractMinIndex(); //This gives the index of the lowest weight
+                    associatedVertexWithMinWeight = minHeap->extractFromHeap(tempMinValIndex);  //Returns the vertex associated with the lowest weight
+                    if (minHeap->isInPositionArray(associatedVertexWithMinWeight) == false) {  //If index has not been visited
+                        cout << r << "--" << associatedVertexWithMinWeight << "(" << tempMinVal << ")" << endl;
                         minHeap->addToVisited(associatedVertexWithMinWeight);
-                        totalCost= totalCost+ tempMinVal;
+                        totalCost = totalCost + tempMinVal;
                         break;
-                    }
-                    else { //if index HAS been VISITED
-                        minHeap->decreaseKey(associatedVertexWithMinWeight,0); //maybe need to do something so th
+                    } else {  //If index has been visited
+                        minHeap->decreaseKey(associatedVertexWithMinWeight, 0); //maybe need to do something so th
                     }
                 }
             }
-            //minHeap->clearAllArrays();
         }
-
-        //minHeap->insert(v, weight);
-        // for (int r = 0; r < numVertices; r++) {
-        //     for (int c = 0; c < numVertices; c++) {
-        //         tempVal= adjMatrix[r][c];
-        //         if (minHeap->isInMinHeap(r)==true && tempVal!=infinity) { //it is 0 atm
-        //             minHeap->insert(c, tempVal);
-        //         }
-        //         else {
-        //             minHeap->incrementCounter();
-        //         }
-        //     }
-        //     tempMinVal= minHeap->extractMin();
-        //     minHeap->decreaseKey(1,2); //use this to get rid of the
-        //
-        //     //after extracting the min which would be 0 at this point, you then gotta call decrease key which works togethwer with minheapify
-        // }
-
-        cout<< "\nTotal Cost: " << minHeap->getTotalCost() << endl;
-    };  // Must print MST edges and total weight
+        cout << "\nTotal Cost: " << totalCost << endl;
+    };
 
 private:
-    int** adjMatrix;
+    int **adjMatrix;
     int numVertices;
-    int tempVal;
-    const int infinity = 999;
-    int tempMinVal;
-    int tempMinValIndex;
+    int tempVal;        //Used to keep track of values at different parts of the program
+    const int infinity = 999; //Constant value used to set initial array values
+    int tempMinVal;     //Returns the lowest key value
+    int tempMinValIndex;    //This gives the index of the lowest weight
     MinHeap *minHeap;
-    int totalCost;
+    int totalCost;          //Keeps tracks of cumulative weight depending on path traversals
+    int associatedVertexWithMinWeight;  //Vertex value with min weight
 };
 
 #endif
